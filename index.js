@@ -32,11 +32,29 @@ async function run() {
 
 
     const cosmeticCollection = client.db('cosmeticDB').collection('cosmetics');
+    const cardCollection=client.db('cardDB').collection('cards');
+    
 
+    app.get('/cosmetics', async (req, res) => {
+        const cursor = cosmeticCollection.find();
+        const result = await cursor.toArray();
+        res.send(result);
+    })
     app.post('/cosmetics', async (req, res) => {
         const newProduct = req.body;
         console.log(newProduct);
         const result = await cosmeticCollection.insertOne(newProduct);
+        res.send(result);
+    })
+    app.get('/cards', async (req, res) => {
+        const cursor = cardCollection.find();
+        const result = await cursor.toArray();
+        res.send(result);
+    })
+    app.post('/cards', async (req, res) => {
+        const product = req.body;
+        console.log(product);
+        const result = await cardCollection.insertOne(product);
         res.send(result);
     })
     // Send a ping to confirm a successful connection
