@@ -28,7 +28,7 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
-    await client.connect();
+    // await client.connect();
 
 
     const cosmeticCollection = client.db('cosmeticDB').collection('cosmetics');
@@ -46,6 +46,7 @@ async function run() {
         const result = await cosmeticCollection.insertOne(newProduct);
         res.send(result);
     })
+   
     app.get('/cards', async (req, res) => {
         const cursor = cardCollection.find();
         const result = await cursor.toArray();
@@ -55,6 +56,31 @@ async function run() {
         const id = req.params.id;
         const query = { _id: new ObjectId(id) }
         const result = await cardCollection.findOne(query);
+        res.send(result);
+    })
+    app.put('/cards/:id', async (req, res) => {
+        const id = req.params.id;
+        const filter = { _id: new ObjectId(id) }
+        const options = { upsert: true };
+        const updateCosmetics = req.body;
+
+        const cosmetics = {
+            $set: {
+                name: updateCosmetics.name,
+                price:updateCosmetics.price,
+                productName:updateCosmetics.productName,
+                rating:updateCosmetics.rating,
+                type:updateCosmetics.type,
+                productImage: updateCosmetics.productImage,
+               
+                
+                
+               
+                
+            }
+        }
+
+        const result = await cardCollection.updateOne(filter, cosmetics, options);
         res.send(result);
     })
     app.post('/cards', async (req, res) => {
